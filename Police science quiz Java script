@@ -1,0 +1,215 @@
+export default function NYPDSocialScienceQuizGame() {
+  const questions = [
+    {
+      question: "What are the three core goals for every NYPD officer?",
+      options: [
+        "Prevent crime, promote trust, solve problems collaboratively",
+        "Make arrests, issue tickets, patrol streets",
+        "Protect property, increase arrests, reduce paperwork",
+        "Investigate crimes, supervise officers, write reports"
+      ],
+      answer: "Prevent crime, promote trust, solve problems collaboratively"
+    },
+    {
+      question: "What is Procedural Justice based on?",
+      options: [
+        "Fairness, voice, transparency, impartiality",
+        "Force, authority, discipline, control",
+        "Speed, arrests, patrol, reports",
+        "Technology, patrol cars, radios, training"
+      ],
+      answer: "Fairness, voice, transparency, impartiality"
+    },
+    {
+      question: "What does S.A.R.A stand for in problem solving?",
+      options: [
+        "Scanning, Analyzing, Responding, Assessing",
+        "Searching, Arresting, Reporting, Acting",
+        "Safety, Awareness, Respect, Accountability",
+        "Scanning, Arresting, Reviewing, Assessing"
+      ],
+      answer: "Scanning, Analyzing, Responding, Assessing"
+    },
+    {
+      question: "Which communication technique involves repeating someone’s words back to them?",
+      options: [
+        "Reflecting/Mirroring",
+        "Minimal encouragers",
+        "Ethical appeal",
+        "Emotional contagion"
+      ],
+      answer: "Reflecting/Mirroring"
+    },
+    {
+      question: "What is racial profiling prohibited by?",
+      options: [
+        "Department policy and law",
+        "Only NYPD patrol guides",
+        "Only federal law",
+        "Only state law"
+      ],
+      answer: "Department policy and law"
+    },
+    {
+      question: "What is the primary responsibility of police officers?",
+      options: [
+        "Protect life",
+        "Protect property",
+        "Issue summonses",
+        "Increase arrests"
+      ],
+      answer: "Protect life"
+    },
+    {
+      question: "What does empathy mean?",
+      options: [
+        "Understanding another person’s feelings",
+        "Winning an argument",
+        "Using force effectively",
+        "Giving commands loudly"
+      ],
+      answer: "Understanding another person’s feelings"
+    },
+    {
+      question: "What is Precision Policing?",
+      options: [
+        "Strategically targeting a small percentage responsible for disproportionate crime",
+        "Stopping everyone for minor offenses",
+        "Random enforcement activity",
+        "Only using detectives for investigations"
+      ],
+      answer: "Strategically targeting a small percentage responsible for disproportionate crime"
+    }
+  ];
+
+  const [currentQuestion, setCurrentQuestion] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [selected, setSelected] = React.useState(null);
+  const [showResult, setShowResult] = React.useState(false);
+  const [gameOver, setGameOver] = React.useState(false);
+
+  const handleAnswer = (option) => {
+    if (selected) return;
+
+    setSelected(option);
+
+    if (option === questions[currentQuestion].answer) {
+      setScore(score + 1);
+    }
+
+    setShowResult(true);
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestion + 1 < questions.length) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelected(null);
+      setShowResult(false);
+    } else {
+      setGameOver(true);
+    }
+  };
+
+  const restartGame = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setSelected(null);
+    setShowResult(false);
+    setGameOver(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-6">
+      <div className="w-full max-w-2xl bg-slate-800 rounded-3xl shadow-2xl p-8 border border-slate-700">
+        <h1 className="text-4xl font-bold text-center mb-2">
+          NYPD Social Science Quiz
+        </h1>
+
+        <p className="text-center text-slate-300 mb-8">
+          Test your knowledge from the study guide.
+        </p>
+
+        {!gameOver ? (
+          <>
+            <div className="flex justify-between items-center mb-6">
+              <span className="text-slate-300">
+                Question {currentQuestion + 1} / {questions.length}
+              </span>
+
+              <span className="bg-blue-600 px-4 py-2 rounded-xl font-semibold">
+                Score: {score}
+              </span>
+            </div>
+
+            <div className="bg-slate-700 rounded-2xl p-6 mb-6">
+              <h2 className="text-2xl font-semibold leading-relaxed">
+                {questions[currentQuestion].question}
+              </h2>
+            </div>
+
+            <div className="grid gap-4">
+              {questions[currentQuestion].options.map((option, index) => {
+                const isCorrect = option === questions[currentQuestion].answer;
+                const isSelected = selected === option;
+
+                let style = "bg-slate-700 hover:bg-slate-600";
+
+                if (showResult) {
+                  if (isCorrect) {
+                    style = "bg-green-600";
+                  } else if (isSelected && !isCorrect) {
+                    style = "bg-red-600";
+                  }
+                }
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswer(option)}
+                    className={`p-4 rounded-2xl text-left transition-all duration-200 font-medium ${style}`}
+                  >
+                    {option}
+                  </button>
+                );
+              })}
+            </div>
+
+            {showResult && (
+              <div className="mt-6 text-center">
+                <p className="text-lg mb-4">
+                  {selected === questions[currentQuestion].answer
+                    ? "Correct!"
+                    : `Incorrect. Correct answer: ${questions[currentQuestion].answer}`}
+                </p>
+
+                <button
+                  onClick={nextQuestion}
+                  className="bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-2xl font-semibold transition"
+                >
+                  Next Question
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center py-10">
+            <h2 className="text-5xl font-bold mb-4">
+              Game Over
+            </h2>
+
+            <p className="text-2xl mb-6">
+              Final Score: {score} / {questions.length}
+            </p>
+
+            <button
+              onClick={restartGame}
+              className="bg-green-600 hover:bg-green-500 px-8 py-4 rounded-2xl text-lg font-semibold transition"
+            >
+              Play Again
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
